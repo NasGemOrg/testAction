@@ -1,0 +1,30 @@
+name: Auto Sync develop to release
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  sync-to-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important: fetch all history to push between branches
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: 🔁 Merge develop → release
+        run: |
+          git checkout release || git checkout -b release
+          git merge origin/develop --no-edit
+
+      - name: 🚀 Push changes to release
+        run: git push origin release
