@@ -1,4 +1,4 @@
-name: Auto Sync develop to release
+name: Sync develop to release with approval
 
 on:
   push:
@@ -6,25 +6,33 @@ on:
       - develop
 
 jobs:
-  sync-to-release:
+  wait-for-approval:
+    name: ⏸️ Wait for approval to deploy to release
     runs-on: ubuntu-latest
+    environment: release-approval  # 👈 This causes a pause for manual approval
+    steps:
+      - run: echo "Approved! Continuing to push changes to release"
+
+  deploy-to-release:
+    name: 🔁 Push develop to release
+    runs-on: ubuntu-latest
+    needs: wait-for-approval
 
     steps:
-      - name: ⬇️ Checkout the repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Important: fetch all history to push between branches
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 📦 Configure Git
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: 🔁 Merge develop → release
+      - name: Merge develop into release
         run: |
           git checkout release || git checkout -b release
           git merge origin/develop --no-edit
 
-      - name: 🚀 Push changes to release
+      - name: Push to release
         run: git push origin release
