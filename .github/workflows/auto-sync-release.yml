@@ -26,8 +26,10 @@ jobs:
     environment:
       name: uat
       url: https://example.com/uat
+    needs: build
     steps:
       - run: echo "Deploying to UAT..."
+    
 
   staging:
     name: STAGING / deploy
@@ -36,6 +38,7 @@ jobs:
     environment:
       name: staging
       url: https://example.com/staging
+    needs: build
     steps:
       - run: echo "Deploying to staging..."
 
