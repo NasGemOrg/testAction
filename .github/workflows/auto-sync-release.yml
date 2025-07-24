@@ -1,79 +1,70 @@
-name: release-deploy
+name: Release - Deployment
 
 on:
   push:
     branches:
-      - develop # or your target branch
+      - release
 
 jobs:
   build:
-    name: Build / delta
+    name: 🔧 Build / Delta
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Building delta..."
+      - name: Just a Message
+        run: echo "🔧 Simulating build and delta packaging..."
 
-  dryrun:
-    name: PROD-DRYRUN / validate
+  prod-dryrun:
+    name: 🧪 PROD-DRYRUN / Validate
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - run: echo "Dry run validation for production..."
+      - name: Just a Message
+        run: echo "🧪 Simulating PROD validation..."
 
   uat:
-    name: UAT / deploy
+    name: 🚀 UAT / Deploy
     runs-on: ubuntu-latest
-    needs: dryrun
-    environment:
-      name: uat
-      url: https://example.com/uat
-    needs: build
+    needs: prod-dryrun
     steps:
-      - run: echo "Deploying to UAT..."
-    
+      - name: Just a Message
+        run: echo "🚀 Simulating UAT deployment..."
 
   staging:
-    name: STAGING / deploy
+    name: 🚀 STAGING / Deploy
     runs-on: ubuntu-latest
-    needs: dryrun
-    environment:
-      name: staging
-      url: https://example.com/staging
-    needs: build
+    needs: prod-dryrun
     steps:
-      - run: echo "Deploying to staging..."
+      - name: Just a Message
+        run: echo "🚀 Simulating STAGING deployment..."
 
   prod:
-    name: PROD / deploy
+    name: 🚀 PROD / Deploy
     runs-on: ubuntu-latest
-    needs:
-      - uat
-      - staging
-    environment:
-      name: production
-      url: https://example.com/prod
+    needs: [uat, staging]
     steps:
-      - run: echo "Deploying to production..."
+      - name: Just a Message
+        run: echo "🚀 Simulating final PROD deployment..."
 
   postprod:
-    name: POST-PROD / deploy
+    name: 🧹 POST-PROD / Deploy
     runs-on: ubuntu-latest
     needs: prod
-    environment:
-      name: postprod
-      url: https://example.com/postprod
     steps:
-      - run: echo "Deploying to post-prod..."
+      - name: Just a Message
+        run: echo "🧹 Simulating post-prod cleanup tasks..."
+
+  update:
+    name: 🔄 UPDATE / Commit-ID
+    runs-on: ubuntu-latest
+    needs: prod
+    steps:
+      - name: Just a Message
+        run: echo "🔄 Simulating update of commit ID..."
 
   sync:
-    name: SYNC / auto-pr
+    name: 🔃 SYNC / Auto-PR
     runs-on: ubuntu-latest
-    needs: postprod
+    needs: prod
     steps:
-      - run: echo "Creating auto PR for sync..."
-
-  update_commit:
-    name: UPDATE / COMMIT-ID
-    runs-on: ubuntu-latest
-    needs: postprod
-    steps:
-      - run: echo "Updating commit ID or tag..."
+      - name: Just a Message
+        run: echo "🔃 Simulating auto-sync to develop..."
