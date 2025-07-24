@@ -1,38 +1,70 @@
-name: Sync develop to release with approval
+name: Release - Deployment
 
 on:
   push:
     branches:
-      - develop
+      - release
 
 jobs:
-  wait-for-approval:
-    name: ⏸️ Wait for approval to deploy to release
+  build:
+    name: 🔧 Build / Delta
     runs-on: ubuntu-latest
-    environment: release-approval  # 👈 This causes a pause for manual approval
     steps:
-      - run: echo "Approved! Continuing to push changes to release"
+      - name: Just a Message
+        run: echo "🔧 Simulating build and delta packaging..."
 
-  deploy-to-release:
-    name: 🔁 Push develop to release
+  prod-dryrun:
+    name: 🧪 PROD-DRYRUN / Validate
     runs-on: ubuntu-latest
-    needs: wait-for-approval
-
+    needs: build
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Just a Message
+        run: echo "🧪 Simulating PROD validation..."
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  uat:
+    name: 🚀 UAT / Deploy
+    runs-on: ubuntu-latest
+    needs: prod-dryrun
+    steps:
+      - name: Just a Message
+        run: echo "🚀 Simulating UAT deployment..."
 
-      - name: Merge develop into release
-        run: |
-          git checkout release || git checkout -b release
-          git merge origin/develop --no-edit
+  staging:
+    name: 🚀 STAGING / Deploy
+    runs-on: ubuntu-latest
+    needs: prod-dryrun
+    steps:
+      - name: Just a Message
+        run: echo "🚀 Simulating STAGING deployment..."
 
-      - name: Push to release
-        run: git push origin release
+  prod:
+    name: 🚀 PROD / Deploy
+    runs-on: ubuntu-latest
+    needs: [uat, staging]
+    steps:
+      - name: Just a Message
+        run: echo "🚀 Simulating final PROD deployment..."
+
+  postprod:
+    name: 🧹 POST-PROD / Deploy
+    runs-on: ubuntu-latest
+    needs: prod
+    steps:
+      - name: Just a Message
+        run: echo "🧹 Simulating post-prod cleanup tasks..."
+
+  update:
+    name: 🔄 UPDATE / Commit-ID
+    runs-on: ubuntu-latest
+    needs: prod
+    steps:
+      - name: Just a Message
+        run: echo "🔄 Simulating update of commit ID..."
+
+  sync:
+    name: 🔃 SYNC / Auto-PR
+    runs-on: ubuntu-latest
+    needs: prod
+    steps:
+      - name: Just a Message
+        run: echo "🔃 Simulating auto-sync to develop..."
