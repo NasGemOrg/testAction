@@ -25,6 +25,7 @@ jobs:
     name: 🚀 UAT / Deploy
     runs-on: ubuntu-latest
     needs: prod-dryrun
+    environment: UAT
     steps:
       - name: Just a Message
         run: echo "🚀 Simulating UAT deployment..."
@@ -33,6 +34,7 @@ jobs:
     name: 🚀 STAGING / Deploy
     runs-on: ubuntu-latest
     needs: prod-dryrun
+    environment: STAGING
     steps:
       - name: Just a Message
         run: echo "🚀 Simulating STAGING deployment..."
@@ -41,6 +43,7 @@ jobs:
     name: 🚀 PROD / Deploy
     runs-on: ubuntu-latest
     needs: [uat, staging]
+    environment: PROD
     steps:
       - name: Just a Message
         run: echo "🚀 Simulating final PROD deployment..."
@@ -49,6 +52,7 @@ jobs:
     name: 🧹 POST-PROD / Deploy
     runs-on: ubuntu-latest
     needs: prod
+    environment: POSTPROD
     steps:
       - name: Just a Message
         run: echo "🧹 Simulating post-prod cleanup tasks..."
