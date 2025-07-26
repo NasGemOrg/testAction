@@ -1,9 +1,10 @@
 name: Release - Deployment
 
 on:
-  push:
+  pull_request:
     branches:
       - release
+    types: [labeled, opened, synchronize]
 
 jobs:
   build:
@@ -25,6 +26,7 @@ jobs:
     name: 🚀 UAT / Deploy
     runs-on: ubuntu-latest
     needs: build
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'UAT deploy')
     environment: UAT
     steps:
       - name: Just a Message
@@ -34,6 +36,7 @@ jobs:
     name: 🚀 STAGING / Deploy
     runs-on: ubuntu-latest
     needs: build
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'STAGING deploy')
     environment: STAGING
     steps:
       - name: Just a Message
@@ -43,6 +46,7 @@ jobs:
     name: 🚀 PROD / Deploy
     runs-on: ubuntu-latest
     needs: prod-dryrun
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'PROD deploy')
     environment: PROD
     steps:
       - name: Just a Message
@@ -52,6 +56,7 @@ jobs:
     name: 🧹 POST-PROD / Deploy
     runs-on: ubuntu-latest
     needs: prod-dryrun
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'POSTPROD deploy')
     environment: POSTPROD
     steps:
       - name: Just a Message
